@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M6 Question Quest</title>
+    <style>
+        /* --- 1. Fonts & Basic Styles --- */
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Fredoka:wght@400;600&family=Comic+Neue:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #FFF9E6;        /* light cream */
+            --primary-accent: #2196F3;  /* friendly blue */
+            --primary-hover: #1976D2;   /* darker blue */
+            --text-color: #333333;      /* dark grey */
+            --card-bg: #FFFFFF;
+            --border-color: #E0E0E0;
+        }
+
+        body {
+            font-family: "Baloo 2", "Fredoka", "Comic Neue", "Comic Sans MS", "Trebuchet MS", system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* --- 2. Main Layout & Header --- */
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--primary-accent);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+        }
+
+        /* --- 3. Question Display Area --- */
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        #questionDisplay {
+            font-size: 2.5rem;
+            font-weight: 600;
+            line-height: 1.4;
+            opacity: 1;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        #questionDisplay.fade-in {
+            opacity: 0;
+        }
+
+        /* --- 4. Controls (Button & Counter) --- */
+        .controls {
+            margin-top: 2rem;
+        }
+
+        .quest-button {
+            background-color: var(--primary-accent);
+            color: white;
+            font-family: inherit;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .quest-button:hover,
+        .quest-button:focus {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .quest-button:active {
+            transform: translateY(1px);
+        }
+
+        #questionCounter {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        /* --- 5. "Show All Questions" Section --- */
+        .all-questions-section {
+            margin-top: 3rem;
+            text-align: left;
+        }
+
+        .toggle-all-questions {
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-accent);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .toggle-all-questions .arrow {
+            display: inline-block;
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-all-questions.open .arrow {
+            transform: rotate(90deg);
+        }
+
+        #allQuestionsListContainer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid transparent;
+        }
+
+        #allQuestionsListContainer.show {
+            max-height: 500px; /* Adjust as needed */
+            overflow-y: auto;
+            border-color: var(--border-color);
+            padding: 1rem 0;
+        }
+
+        #allQuestionsList {
+            list-style-type: decimal;
+            padding-left: 3rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* --- 6. Footer --- */
+        footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.6;
+        }
+
+        /* --- Media Queries for smaller screens --- */
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            #questionDisplay {
+                font-size: 1.8rem;
+            }
+            .quest-button {
+                font-size: 1.2rem;
+                padding: 0.8rem 1.8rem;
+            }
+            .question-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>M6 Question Quest</h1>
+            <p>Click the button to get a new question!</p>
+        </header>
+
+        <main>
+            <div class="question-card">
+                <p id="questionDisplay">Click the button to see your first question!</p>
+            </div>
+
+            <div class="controls">
+                <button class="quest-button" id="newQuestionBtn">Ask a Question!</button>
+                <p id="questionCounter">Questions used: 0 / 20</p>
+            </div>
+
+            <div class="all-questions-section">
+                <button class="toggle-all-questions" id="toggleListBtn">
+                    See All Questions <span class="arrow">▶</span>
+                </button>
+                <div id="allQuestionsListContainer">
+                    <ol id="allQuestionsList"></ol>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Made for M6</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Content: The Question List ---
+            const questions = [
+                "What is your favourite food?",
+                "Do you have any pets? If yes, what are their names?",
+                "What is your favourite game to play at school?",
+                "What makes you laugh the most?",
+                "What is your favourite book or story?",
+                "If you could have any superpower, what would it be?",
+                "What is your favourite thing to do on the weekend?",
+                "What is something you are really good at?",
+                "What is your favourite colour?",
+                "What is your favourite movie or TV show?",
+                "If you could visit any place in the world, where would you go?",
+                "What is your favourite animal?",
+                "What is a hobby you enjoy?",
+                "What is something that makes you feel proud?",
+                "What is your favourite subject at school?",
+                "If you could have any job when you grow up, what would it be?",
+                "What is your favourite song or type of music?",
+                "Do you have a favourite sport or activity?",
+                "What is a fun fact about you?",
+                "If you could invent something, what would it be?"
+            ];
+
+            // --- 2. Element References ---
+            const questionDisplay = document.getElementById('questionDisplay');
+            const newQuestionBtn = document.getElementById('newQuestionBtn');
+            const questionCounterDisplay = document.getElementById('questionCounter');
+            const allQuestionsList = document.getElementById('allQuestionsList');
+            const toggleListBtn = document.getElementById('toggleListBtn');
+            const allQuestionsContainer = document.getElementById('allQuestionsListContainer');
+
+            // --- 3. State Management ---
+            let usedQuestionIndexes = new Set();
+            let lastQuestionIndex = -1;
+            const totalQuestions = questions.length;
+
+            // --- 4. Core Functions ---
+
+            /**
+             * Gets a random question index that hasn't been used recently.
+             * Tries to avoid picking the same question twice in a row.
+             */
+            function getRandomQuestionIndex() {
+                if (questions.length <= 1) {
+                    return 0;
+                }
+
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questions.length);
+                } while (newIndex === lastQuestionIndex);
+                
+                lastQuestionIndex = newIndex;
+                return newIndex;
+            }
+
+            /**
+             * Displays a new random question.
+             */
+            function showNewQuestion() {
+                const index = getRandomQuestionIndex();
+                const question = questions[index];
+
+                // Add a fade-out/fade-in animation
+                questionDisplay.classList.add('fade-in');
+
+                setTimeout(() => {
+                    questionDisplay.textContent = question;
+                    questionDisplay.classList.remove('fade-in');
+                }, 400); // Match this with the CSS transition duration
+
+                // Update the counter
+                if (!usedQuestionIndexes.has(index)) {
+                    usedQuestionIndexes.add(index);
+                    updateCounter();
+                }
+            }
+
+            /**
+             * Updates the "Questions used" counter text.
+             */
+            function updateCounter() {
+                const usedCount = usedQuestionIndexes.size;
+                questionCounterDisplay.textContent = `Questions used: ${usedCount} / ${totalQuestions}`;
+            }
+            
+            /**
+             * Populates the "All Questions" list at the bottom.
+             */
+            function populateAllQuestionsList() {
+                questions.forEach(q => {
+                    const li = document.createElement('li');
+                    li.textContent = q;
+                    allQuestionsList.appendChild(li);
+                });
+            }
+            
+            /**
+             * Toggles the visibility of the all-questions list.
+             */
+            function toggleAllQuestionsView() {
+                allQuestionsContainer.classList.toggle('show');
+                toggleListBtn.classList.toggle('open');
+            }
+
+
+            // --- 5. Event Listeners ---
+            newQuestionBtn.addEventListener('click', showNewQuestion);
+            toggleListBtn.addEventListener('click', toggleAllQuestionsView);
+
+            // --- 6. Initialization ---
+            populateAllQuestionsList();
+            updateCounter(); // Initialize counter text
+        });
+    </script>
+</body>
+</html>
